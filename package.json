@@ -1,0 +1,36 @@
+{
+  "name": "@mulekick/file-streamer",
+  "version": "1.0.0",
+  "description": "Perform continous reads on a file or named pipe, push the data into a readable stream.",
+  "type": "module",
+  "main": "file.streamer.js",
+  "devDependencies": {},
+  "engines": {
+    "node": ">= 16.13.2",
+    "npm": ">= 8.7.0"
+  },
+  "scripts": {
+    "test": "node test.script.js test.file",
+    "prepublishOnly": "npm test && eslint --ext .js --max-warnings 1 --report-unused-disable-directives .",
+    "postpublish": "git add . && git commit -m \"$npm_package_name: version $npm_package_version published on $(date +%F\\ %r)\" && git push -u origin master"
+  },
+  "keywords": [
+    "linux",
+    "file",
+    "fifo",
+    "named pipe",
+    "stream",
+    "fd",
+    "event emitter"
+  ],
+  "author": "mulekick",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mulekick/file-streamer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mulekick/file-streamer/issues"
+  },
+  "homepage": "https://github.com/mulekick/file-streamer#readme"
+}

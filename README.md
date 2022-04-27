@@ -1,0 +1,1 @@
+Perform continous reads on a file or named pipe, push the data into a readable stream.
