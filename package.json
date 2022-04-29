@@ -1,6 +1,6 @@
 {
   "name": "@mulekick/file-streamer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Perform continous reads on a file or named pipe, push the data into a readable stream.",
   "type": "module",
   "main": "file.streamer.js",

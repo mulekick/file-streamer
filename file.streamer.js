@@ -215,8 +215,8 @@ class fileStreamer extends EventEmitter {
                             r.read();
                     // if something was read
                     } else {
-                        // update readable state
-                        r.suspended = !r.readable.push(buffer);
+                        // crop buffer to number of bytes read, push and update readable state
+                        r.suspended = !r.readable.push(buffer.subarray(0, bytesRead));
                         // stream demands more writes
                         if (r.suspended === false)
                             // go for more
