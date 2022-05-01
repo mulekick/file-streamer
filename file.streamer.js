@@ -118,7 +118,7 @@ class fileStreamer extends EventEmitter {
                 // store fd
                 r.fileDesc = fileDesc;
                 // resolve / emit 'file' event
-                return resolve && typeof resolve === `function` ? resolve() : r.emit(`file`, r);
+                return resolve && typeof resolve === `function` ? resolve(r) : r.emit(`file`, r);
             } catch (err) {
                 // reject / emit 'error' event
                 return reject && typeof reject === `function` ? reject(err) : r.emit(`error`, err);
@@ -269,7 +269,7 @@ class fileStreamer extends EventEmitter {
                 // reset fd
                 r.fileDesc = null;
                 // resolve / emit 'closed' event
-                return resolve && typeof resolve === `function` ? resolve() : r.emit(`closed`, r);
+                return resolve && typeof resolve === `function` ? resolve(r) : r.emit(`closed`, r);
             } catch (err) {
                 // reject / emit 'error' event
                 return reject && typeof reject === `function` ? reject(err) : r.emit(`error`, err);

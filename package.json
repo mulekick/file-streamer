@@ -10,7 +10,7 @@
     "npm": ">= 8.7.0"
   },
   "scripts": {
-    "test": "node test.script.js test.file",
+    "test": "./scripts/test.script.js scripts/test.file",
     "prepublishOnly": "npm test && eslint --ext .js --max-warnings 1 --report-unused-disable-directives .",
     "postpublish": "git add . && git commit -m \"$npm_package_name: version $npm_package_version published on $(date +%F\\ %r)\" && git push -u origin master"
   },

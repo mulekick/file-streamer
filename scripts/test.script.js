@@ -1,7 +1,9 @@
+#!/usr/bin/env node
+
 // import primitives
 import {once} from "events";
 // import modules
-import {fileStreamer} from "./file.streamer.js";
+import {fileStreamer} from "../file.streamer.js";
 
 (async() => {
 
