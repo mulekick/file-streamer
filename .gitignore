@@ -2,3 +2,5 @@
 /node_modules/*
 # exclude eslint config
 .eslint*
+# exclude debug config
+.vscode

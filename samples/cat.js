@@ -1,11 +1,17 @@
 #!/usr/bin/env node
 
-/* eslint-disable no-await-in-loop */
+// *****************************************************
+// cat.js : emulates bash shell's cat [file] utility by
+// successively streaming contents of files passed as
+// parameters to stdout using fileStreamer's async mode
+// ****************************************************
 
 // import primitives
 import {once} from "events";
 // import modules
 import {fileStreamer} from "../file.streamer.js";
+
+/* eslint-disable no-await-in-loop */
 
 (async() => {
 
@@ -15,32 +21,26 @@ import {fileStreamer} from "../file.streamer.js";
         console.debug(`process started with PID ${ process.pid }.`);
 
         const
-            // file
+            // file paths
             files = process.argv.slice(2),
-            // reader (4 bytes)
-            streamer = new fileStreamer({bufSize: 4, errorOnMissing: true, closeOnEOF: true});
+            // file streamer, auto close file on EOF
+            streamer = new fileStreamer({bufSize: 128, errorOnMissing: true, closeOnEOF: true});
 
         streamer
-            // attach file streamer handlers
-            .on(`reading`, () => console.debug(`file streamer: reading file contents ...`))
-            .on(`paused`, () => console.debug(`file streamer: reading paused.`))
-            .on(`stopped`, () => console.debug(`file streamer: reading stopped.`))
-            .on(`closed`, () => console.debug(`file streamer: file closed.`))
-            // mandatory error event handler for EventEmitter (stack trace + exit if missing)
-            .on(`error`, err => console.debug(`error: file streamer emitted ${ err.message }.`));
+            // attach file streamer error handler
+            .on(`error`, err => console.debug(`error: file streamer emitted ${ err.message }`));
 
+        // sequentially stream multiple files
         for (const file of files) {
 
-            // open in promise mode
+            // open in async mode
             await streamer.promise(`open`, file);
 
             streamer
                 // stream file contents
                 .stream()
-                // attach readable stream handlers
-                .on(`end`, () => console.debug(`file streamer: readable stream received EOF.`))
-                .on(`close`, () => console.debug(`file streamer: readable stream closed.`))
-                .on(`error`, err => console.debug(`file streamer: readable stream emitted error ${ err.message }.`))
+                // attach readable stream error handler
+                .on(`error`, err => console.debug(`file streamer: readable stream emitted error ${ err.message }`))
                 // pipe
                 .pipe(process.stdout);
 

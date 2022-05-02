@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
 // *****************************************************
-// callbacks.js : streams the contents of the named pipe
-// passed as parameter to stdout using fileStreamer's
-// callback mode until SIGTERM is received
+// subprocesses.js : prints the output of multiple commands
+// to stdout from named pipe passed as parameter
 // ****************************************************
 
+// import primitives
+import {execFile} from "child_process";
 // import modules
 import {fileStreamer} from "../file.streamer.js";
+
 
 try {
 
@@ -21,29 +23,25 @@ try {
         streamer = new fileStreamer({bufSize: 128, errorOnMissing: true, closeOnEOF: false});
 
     streamer
-        // attach file streamer handlers
-        .on(`reading`, () => console.debug(`file streamer: reading file contents ...`))
-        .on(`paused`, () => console.debug(`file streamer: reading paused.`))
-        .on(`stopped`, () => console.debug(`file streamer: reading stopped.`))
-        .on(`closed`, () => console.debug(`file streamer: file closed.`))
         // attach file streamer error handler
         .on(`error`, err => console.debug(`error: file streamer emitted ${ err.message }.`));
 
     // open
     streamer.open(file)
         .on(`file`, fstr => {
-            console.debug(`file ${ fstr.fileName } opened for streaming.`);
             fstr
                 // stream file contents
                 .stream()
-                // attach readable stream handlers
-                .on(`end`, () => console.debug(`file streamer: readable stream received EOF.`))
-                .on(`close`, () => console.debug(`file streamer: readable stream closed.`))
                 // attach readable stream error handler
                 .on(`error`, err => console.debug(`file streamer: readable stream emitted error ${ err.message }.`))
                 // pipe
                 .pipe(process.stdout);
         });
+
+    // spawn commands whose outputs are redirected to file
+    execFile(`${ process.cwd() }/subprocess.sh`, [ `.`, file ]);
+    execFile(`${ process.cwd() }/subprocess.sh`, [ `..`, file ]);
+    execFile(`${ process.cwd() }/subprocess.sh`, [ `/`, file ]);
 
     // exit process
     process.on(`SIGTERM`, () => {

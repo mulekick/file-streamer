@@ -55,42 +55,52 @@ class fileStreamer extends EventEmitter {
     }
 
     watch() {
-        // detect targeted file changes
-        this.watchr = watch(this.fileName, {
-            // don't prevent process from exiting
-            persistent: true,
-            // filename encoding
-            encoding: `utf8`,
-            // non recursive
-            recursive: false
-        })
-            // reset readable on change
-            .on(`change`, e => {
-                // emit error if file suddenly disappears (RENAME IS EMITTED ON PROCESS EXIT 😡)
-                // if (e === `rename`)
-                if (e === `change`)
-                    // push access into next tick queue to have it preempt any queued immediate, its callback will
-                    // be added to the job queue and assume priority over anything sitting in the message queue
-                    process.nextTick(r => access(r.fileName, constants.R_OK, err => {
-                        if (err) {
-                            // emit 'error' event
-                            r.emit(`error`, err);
-                            // unwatch
-                            r.unwatch();
-                        }
-                    }), this);
+        try {
+            // detect targeted file changes
+            this.watchr = watch(this.fileName, {
+                // don't prevent process from exiting
+                persistent: true,
+                // filename encoding
+                encoding: `utf8`,
+                // non recursive
+                recursive: false
             })
+                // reset readable on change
+                .on(`change`, e => {
+                    // emit error if file suddenly disappears (RENAME IS EMITTED ON PROCESS EXIT 😡)
+                    // if (e === `rename`)
+                    if (e === `change`)
+                        // push access into next tick queue to have it preempt any queued immediate, its callback will
+                        // be added to the job queue and assume priority over anything sitting in the message queue
+                        process.nextTick(r => access(r.fileName, constants.R_OK, err => {
+                            if (err) {
+                                // emit 'error' event
+                                r.emit(`error`, err);
+                                // unwatch
+                                r.unwatch();
+                            }
+                        }), this);
+                })
+                // emit 'error' event
+                .on(`error`, err => this.emit(`error`, err));
+        } catch (err) {
             // emit 'error' event
-            .on(`error`, err => this.emit(`error`, err));
+            this.emit(`error`, err);
+        }
     }
 
     unwatch() {
-        // stop watching targeted file (fs.FSWatcher is not exported, so we have to settle for a downgraded test)
-        if (this.watchr !== null) {
-            // discard
-            this.watchr.unref();
-            // reset
-            this.watchr = null;
+        try {
+            // stop watching targeted file (fs.FSWatcher is not exported, so we have to settle for a downgraded test)
+            if (this.watchr !== null) {
+                // discard
+                this.watchr.unref();
+                // reset
+                this.watchr = null;
+            }
+        } catch (err) {
+            // emit 'error' event
+            this.emit(`error`, err);
         }
     }
 
@@ -248,6 +258,7 @@ class fileStreamer extends EventEmitter {
             // emit 'stopped' event
             this.emit(`stopped`, this);
         }
+
         // return this for chaining
         return this;
     }

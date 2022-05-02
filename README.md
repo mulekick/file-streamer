@@ -4,7 +4,7 @@ This module exports a class which, when instantiated and provided with a file / 
 
 You can think of it as behaving similarly to the node.js primitive [fs.createReadStream()](https://nodejs.org/api/fs.html#fscreatereadstreampath-options). The difference is that the readable stream here will not emit 'end' and terminate itself as soon as EOF is reached. Instead, the file streamer will keep on attempting to read from the specified file/named pipe and pass the bytes to the readable stream until explicitly told to stop.
 
-One noticeable perk it provides is that it allows other processes to keep pushing data into a named pipe until the conditions are met for the pipe contents to be processed, [without the pipe ever blocking](#fifo-block-note) (a file descriptor will be assigned to the named pipe, thus preventing any process performing writes on the named pipe from hanging, until the close() method is called and closes the file descriptor).
+One noticeable perk it provides is that it allows other processes to keep pushing data into a named pipe until the conditions are met for the pipe contents to be processed, [without the pipe ever blocking](#fifo-block-note) (a file descriptor will be assigned to the named pipe, thus preventing any process writing to it from hanging, until the close() method is called and closes the file descriptor).
 
 ## Install
 
@@ -55,6 +55,7 @@ Async mode:
 
 ```js
 import {fileStreamer} from "@mulekick/file-streamer";
+import {once} from "events";
 
 (async() => {
     try {
