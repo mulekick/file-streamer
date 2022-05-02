@@ -136,7 +136,7 @@ Stop reading from `filename`, signals EOF to the readable stream, then resets it
 
 ### fileStreamer.close([resolve, reject])
 
-- `resolve`, `reject` Functions: in the event you want to wrap the open method in your own promises
+- `resolve`, `reject` Functions: in the event you want to wrap the close method in your own promises
 - Returns: <code>[fileStreamer](#class-file-streamer)</code>
 
 Closes `filename` and resets the references to it and to its file descriptor, thus making the <code>[fileStreamer](#class-file-streamer)</code> ready to open another file (`fileStreamer.unstream` must have been called first, or an error will be emitted).
