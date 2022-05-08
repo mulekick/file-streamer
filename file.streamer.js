@@ -141,9 +141,6 @@ class fileStreamer extends EventEmitter {
 
     // retrieve readable from file
     stream() {
-        const
-            // callback alias
-            _this = this;
 
         if (this.fileDesc === null)
             // no file opened
@@ -153,7 +150,7 @@ class fileStreamer extends EventEmitter {
             // limit size of buffered data
             throw new RangeError(`buffer size for file descriptor reads must be below ${ MAX_STREAMABLE_BUFFER_SIZE } bytes if reads are to be streamed.`);
 
-        // setup readable
+        // setup readable - use arrow functions so as to retrieve enclosing lexical context's this
         this.readable = new Readable({
             // stream chunk by chunk
             highWaterMark: this.bufSize,
@@ -166,28 +163,28 @@ class fileStreamer extends EventEmitter {
             // construct implementation
             construct: callback => {
                 // emit 'reading' event
-                _this.emit(`reading`, _this);
+                this.emit(`reading`, this);
                 // trigger reads
-                _this.read();
+                this.read();
                 // begin pushing data
                 callback();
             },
             // read implementation
             read: () => {
                 // verify state
-                if (_this.suspended === true) {
+                if (this.suspended === true) {
                     // reset state
-                    _this.suspended = false;
+                    this.suspended = false;
                     // emit 'reading' event
-                    _this.emit(`reading`, _this);
+                    this.emit(`reading`, this);
                     // trigger reads
-                    _this.read();
+                    this.read();
                 }
             },
             // destroy implementation
             destroy: (err, callback) => {
                 // reset readable
-                _this.readable = null;
+                this.readable = null;
                 // exit
                 callback(err);
             },
