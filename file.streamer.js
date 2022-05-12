@@ -29,8 +29,8 @@ class fileStreamer extends EventEmitter {
         this.fileDesc = null;
         // store readable
         this.readable = null;
-        // store current read immediate
-        this.immediate = null;
+        // read cache
+        this.cachedRead = null;
         // store state (init to false, will switch to true as soon as push operations on readable return false)
         this.suspended = false;
         // store file watcher
@@ -95,6 +95,8 @@ class fileStreamer extends EventEmitter {
             if (this.watchr !== null) {
                 // discard
                 this.watchr.unref();
+                // close
+                this.watchr.close();
                 // reset
                 this.watchr = null;
             }
@@ -199,19 +201,27 @@ class fileStreamer extends EventEmitter {
     // read
     read() {
         // start recursive reads
-        this.immediate = setImmediate(async r => {
+        setImmediate(async r => {
             try {
                 // and if the conditions for a read are present ...
                 if (r.fileDesc !== null && r.readable instanceof Readable) {
                     const
-                        // read bytes from file
-                        {bytesRead, buffer} = await promisify(read)(r.fileDesc, {
+                        // file / cache (no race condition here)
+                        {bytesRead, buffer} = r.cachedRead ? r.cachedRead : await promisify(read)(r.fileDesc, {
                             // read bytes from file
                             buffer: Buffer.alloc(r.bufSize),
                             length: r.bufSize
                         });
+                    // eslint-disable-next-line require-atomic-updates
+                    r.cachedRead = null;
+                    // if readable is gone at this stage because of unstream()
+                    if (r.readable instanceof Readable === false) {
+                        // emit 'stopped' event
+                        r.emit(`stopped`, r);
+                        // cache read
+                        r.cachedRead = {bytesRead, buffer};
                     // if nothing was read
-                    if (bytesRead === 0) {
+                    } else if (bytesRead === 0) {
                         // if reads are to stop on EOF
                         if (r.closeOnEOF === true)
                             // stop streaming file contents and close
@@ -247,15 +257,9 @@ class fileStreamer extends EventEmitter {
 
     unstream() {
         // if readable is up
-        if (this.readable instanceof Readable) {
-            // cancel current read
-            clearImmediate(this.immediate);
-            // Signal EOF to readable (will auto destroy)
+        if (this.readable instanceof Readable)
+            // Signal EOF (readable will auto destroy)
             this.readable.push(null);
-            // emit 'stopped' event
-            this.emit(`stopped`, this);
-        }
-
         // return this for chaining
         return this;
     }

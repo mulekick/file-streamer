@@ -20,7 +20,7 @@ try {
         // file
         [ file ] = process.argv.slice(2),
         // file streamer, continue reads on EOF
-        streamer = new fileStreamer({bufSize: 128, errorOnMissing: true, closeOnEOF: false});
+        streamer = new fileStreamer({bufSize: 128, errorOnMissing: true, closeOnEOF: true});
 
     streamer
         // attach file streamer error handler
@@ -42,15 +42,6 @@ try {
     execFile(`${ process.cwd() }/subprocess.sh`, [ `.`, file ]);
     execFile(`${ process.cwd() }/subprocess.sh`, [ `..`, file ]);
     execFile(`${ process.cwd() }/subprocess.sh`, [ `/`, file ]);
-
-    // exit process
-    process.on(`SIGTERM`, () => {
-        console.debug(`received SIGTERM, stopping and exiting.`);
-        // close
-        streamer
-            .unstream()
-            .close();
-    });
 
 } catch (err) {
     // write to stderr
