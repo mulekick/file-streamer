@@ -46,8 +46,8 @@ try {
         });
 
     // exit process
-    process.on(`SIGTERM`, () => {
-        console.debug(`received SIGTERM, stopping and exiting.`);
+    process.on(`SIGINT`, () => {
+        console.debug(`received SIGINT, stopping and exiting.`);
         // close
         streamer
             .unstream()

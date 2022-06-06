@@ -272,6 +272,8 @@ class fileStreamer extends EventEmitter {
                 if (r.readable instanceof Readable)
                     // throw error to enforce calling 'unstream' first
                     throw new Error(`readable is still reading from ${ r.fileName }, call unstream() first.`);
+                // reset read cache
+                r.cachedRead = null;
                 // close file
                 await promisify(close)(r.fileDesc);
                 // unwatch

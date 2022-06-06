@@ -70,10 +70,10 @@ import {fileStreamer} from "../file.streamer.js";
             .pipe(process.stdout);
 
         // exit process
-        process.on(`SIGTERM`, () => console.debug(`received SIGTERM, stopping and exiting.`));
+        process.on(`SIGINT`, () => console.debug(`received SIGINT, stopping and exiting.`));
 
-        // wait for SIGTERM
-        await once(process, `SIGTERM`);
+        // wait for SIGINT
+        await once(process, `SIGINT`);
 
         // close
         await streamer.promise(`close`);
