@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 // import primitives
+import process from "node:process";
+import console from "node:console";
 import {once} from "events";
 // import modules
 import {fileStreamer} from "../file.streamer.js";

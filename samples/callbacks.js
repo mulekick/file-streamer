@@ -7,6 +7,8 @@
 // ****************************************************
 
 // import modules
+import process from "node:process";
+import console from "node:console";
 import {fileStreamer} from "../file.streamer.js";
 
 try {

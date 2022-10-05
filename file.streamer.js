@@ -1,8 +1,10 @@
 // import primitives
-import {EventEmitter} from "events";
-import {promisify} from "util";
-import {Readable} from "stream";
-import {open, read, close, watch, access, constants} from "fs";
+import process from "node:process";
+import {Buffer} from "node:buffer";
+import {EventEmitter} from "node:events";
+import {promisify} from "node:util";
+import {Readable} from "node:stream";
+import {open, read, close, watch, access, constants} from "node:fs";
 
 const
     // max highWaterMark value for readable stream
@@ -69,9 +71,9 @@ class fileStreamer extends EventEmitter {
                 .on(`change`, e => {
                     // emit error if file suddenly disappears (RENAME IS EMITTED ON PROCESS EXIT 😡)
                     // if (e === `rename`)
-                    if (e === `change`)
-                        // push access into next tick queue to have it preempt any queued immediate, its callback will
-                        // be added to the job queue and assume priority over anything sitting in the message queue
+                    if (e === `change`) {
+                        // push access into the next tick queue to have its callback immediately assume
+                        // priority over any I/O callback pushed into the message queue through an immediate
                         process.nextTick(r => access(r.fileName, constants.R_OK, err => {
                             if (err) {
                                 // emit 'error' event
@@ -80,6 +82,7 @@ class fileStreamer extends EventEmitter {
                                 r.unwatch();
                             }
                         }), this);
+                    }
                 })
                 // emit 'error' event
                 .on(`error`, err => this.emit(`error`, err));
@@ -207,11 +210,13 @@ class fileStreamer extends EventEmitter {
                 if (r.fileDesc !== null && r.readable instanceof Readable) {
                     const
                         // file / cache (no race condition here)
-                        {bytesRead, buffer} = r.cachedRead ? r.cachedRead : await promisify(read)(r.fileDesc, {
-                            // read bytes from file
-                            buffer: Buffer.alloc(r.bufSize),
-                            length: r.bufSize
-                        });
+                        {bytesRead, buffer} = r.cachedRead ?
+                            r.cachedRead :
+                            await promisify(read)(r.fileDesc, {
+                                // read bytes from file
+                                buffer: Buffer.alloc(r.bufSize),
+                                length: r.bufSize
+                            });
                     // eslint-disable-next-line require-atomic-updates
                     r.cachedRead = null;
                     // if readable is gone at this stage because of unstream()

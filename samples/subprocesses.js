@@ -6,6 +6,8 @@
 // ****************************************************
 
 // import primitives
+import process from "node:process";
+import console from "node:console";
 import {execFile} from "child_process";
 // import modules
 import {fileStreamer} from "../file.streamer.js";
