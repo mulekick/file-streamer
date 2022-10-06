@@ -3,7 +3,7 @@
 // *****************************************************
 // cat.js : emulates bash shell's cat [file] utility by
 // successively streaming contents of files passed as
-// parameters to stdout using fileStreamer's async mode
+// parameters to stdout using FileStreamer's async mode
 // ****************************************************
 
 // import primitives
@@ -11,7 +11,7 @@ import process from "node:process";
 import console from "node:console";
 import {once} from "events";
 // import modules
-import {fileStreamer} from "../file.streamer.js";
+import {FileStreamer} from "../file.streamer.js";
 
 /* eslint-disable no-await-in-loop */
 
@@ -26,7 +26,7 @@ import {fileStreamer} from "../file.streamer.js";
             // file paths
             files = process.argv.slice(2),
             // file streamer, auto close file on EOF
-            streamer = new fileStreamer({bufSize: 128, errorOnMissing: true, closeOnEOF: true});
+            streamer = new FileStreamer({bufSize: 128, errorOnMissing: true, closeOnEOF: true});
 
         streamer
             // attach file streamer error handler

@@ -19,12 +19,12 @@ npm install @mulekick/file-streamer
 Callback mode:
 
 ```js
-import {fileStreamer} from "@mulekick/file-streamer";
+import {FileStreamer} from "@mulekick/file-streamer";
 
 try {
     const
         myFile = `/path/to/my/file`,
-        streamer = new fileStreamer(),
+        streamer = new FileStreamer(),
         writable = getWritableStreamSomehow(),
         processing = getEventEmitterSomehow();
 
@@ -54,14 +54,14 @@ try {
 Async mode:
 
 ```js
-import {fileStreamer} from "@mulekick/file-streamer";
+import {FileStreamer} from "@mulekick/file-streamer";
 import {once} from "events";
 
 (async() => {
     try {
         const
             myFile = `/path/to/my/file`,
-            streamer = new fileStreamer(),
+            streamer = new FileStreamer(),
             writable = getWritableStreamSomehow(),
             processing = getEventEmitterSomehow();
 
@@ -89,13 +89,13 @@ import {once} from "events";
 
 <a id="class-file-streamer"></a>
 
-### Class: fileStreamer
+### Class: FileStreamer
 
 ### Constructor
 
-### new fileStreamer([options])
+### new FileStreamer([options])
 - `options` [Options](#file-streamer-options) for the file streamer
-- Returns: `fileStreamer`
+- Returns: `FileStreamer`
 
 <a id="file-streamer-options"></a>
 
@@ -114,44 +114,44 @@ The default values are shown after each option key.
 
 ### Methods
 
-### fileStreamer.open(fileName[, resolve, reject])
+### FileStreamer.open(fileName[, resolve, reject])
 
 - `filename` String: the path of the file to open
 - `resolve`, `reject` Functions: in the event you want to wrap the open method in your own promises
-- Returns: <code>[fileStreamer](#class-file-streamer)</code>
+- Returns: <code>[FileStreamer](#class-file-streamer)</code>
 
 Opens `filename` in read-only mode (`0o444`) and assigns a file descriptor to it.
 
-### fileStreamer.stream()
+### FileStreamer.stream()
 
 - Returns: <code>[stream.Readable](https://nodejs.org/api/stream.html#class-streamreadable)</code>
 
-Create a readable stream instance, begins to read from `filename` and pass the data to the readable, making it ready for consumption (`fileStreamer.open` must have been called first, or an error will be emitted).
+Create a readable stream instance, begins to read from `filename` and pass the data to the readable, making it ready for consumption (`FileStreamer.open` must have been called first, or an error will be emitted).
 
-### fileStreamer.unstream()
+### FileStreamer.unstream()
 
-- Returns: <code>[fileStreamer](#class-file-streamer)</code>
+- Returns: <code>[FileStreamer](#class-file-streamer)</code>
 
 Stop reading from `filename`, signals EOF to the readable stream, then resets its reference to it.
 
-### fileStreamer.close([resolve, reject])
+### FileStreamer.close([resolve, reject])
 
 - `resolve`, `reject` Functions: in the event you want to wrap the close method in your own promises
-- Returns: <code>[fileStreamer](#class-file-streamer)</code>
+- Returns: <code>[FileStreamer](#class-file-streamer)</code>
 
-Closes `filename` and resets the references to it and to its file descriptor, thus making the <code>[fileStreamer](#class-file-streamer)</code> ready to open another file (`fileStreamer.unstream` must have been called first, or an error will be emitted).
+Closes `filename` and resets the references to it and to its file descriptor, thus making the <code>[FileStreamer](#class-file-streamer)</code> ready to open another file (`FileStreamer.unstream` must have been called first, or an error will be emitted).
 
-### fileStreamer.promise(action[, fileName])
+### FileStreamer.promise(action[, fileName])
 
 - `action` String: what is to be done with the file (either `open` or `close`)
 - `filename` String: the path of the file
-- Returns: <code>Promise&lt;[fileStreamer](#class-file-streamer)&gt;</code>
+- Returns: <code>Promise&lt;[FileStreamer](#class-file-streamer)&gt;</code>
 
-Wraps `fileStreamer.open` and `fileStreamer.close` methods into promises to use when streaming file contents in [async mode](#file-streamer-async-mode).
+Wraps `FileStreamer.open` and `FileStreamer.close` methods into promises to use when streaming file contents in [async mode](#file-streamer-async-mode).
 
 ### Events
 
-The following events may be emitted during the life cycle of a <code>[fileStreamer](#class-file-streamer)</code> instance:
+The following events may be emitted during the life cycle of a <code>[FileStreamer](#class-file-streamer)</code> instance:
 
 | Event fired         | Condition                                                    |
 | ------------------- | -------------------------------------------------------------|
@@ -162,7 +162,7 @@ The following events may be emitted during the life cycle of a <code>[fileStream
 | `closed`            | file has been closed and file descriptor reference was reset |
 | `error`             | some error occured                                           |
 
-All callbacks will be passed the emitting <code>[fileStreamer](#class-file-streamer)</code> instance except for the `error` callback which will be passed the emitted error.
+All callbacks will be passed the emitting <code>[FileStreamer](#class-file-streamer)</code> instance except for the `error` callback which will be passed the emitted error.
 
 ## Notes
 - [What exactly is EOF ?](https://ruslanspivak.com/eofnotchar/)

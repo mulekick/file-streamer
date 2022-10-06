@@ -2,7 +2,7 @@
 
 // *****************************************************
 // async.js : streams the contents of the named pipe
-// passed as parameter to stdout using fileStreamer's
+// passed as parameter to stdout using FileStreamer's
 // async mode. Contents is streamed for 20 seconds from
 // the first read, then streaming stops for another 20
 // seconds, then resumes until SIGTERM is received
@@ -13,7 +13,7 @@ import process from "node:process";
 import console from "node:console";
 import {once} from "events";
 // import modules
-import {fileStreamer} from "../file.streamer.js";
+import {FileStreamer} from "../file.streamer.js";
 
 (async() => {
 
@@ -26,7 +26,7 @@ import {fileStreamer} from "../file.streamer.js";
             // file
             [ file ] = process.argv.slice(2),
             // file streamer, continue reads on EOF
-            streamer = new fileStreamer({bufSize: 128, errorOnMissing: true, closeOnEOF: false});
+            streamer = new FileStreamer({bufSize: 128, errorOnMissing: true, closeOnEOF: false});
 
         streamer
             // attach file streamer error handler

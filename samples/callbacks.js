@@ -2,14 +2,14 @@
 
 // *****************************************************
 // callbacks.js : streams the contents of the named pipe
-// passed as parameter to stdout using fileStreamer's
+// passed as parameter to stdout using FileStreamer's
 // callback mode until SIGTERM is received
 // ****************************************************
 
 // import modules
 import process from "node:process";
 import console from "node:console";
-import {fileStreamer} from "../file.streamer.js";
+import {FileStreamer} from "../file.streamer.js";
 
 try {
 
@@ -20,7 +20,7 @@ try {
         // file
         [ file ] = process.argv.slice(2),
         // file streamer, continue reads on EOF
-        streamer = new fileStreamer({bufSize: 128, errorOnMissing: true, closeOnEOF: false});
+        streamer = new FileStreamer({bufSize: 128, errorOnMissing: true, closeOnEOF: false});
 
     streamer
         // attach file streamer handlers

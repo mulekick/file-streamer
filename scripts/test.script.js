@@ -5,7 +5,7 @@ import process from "node:process";
 import console from "node:console";
 import {once} from "events";
 // import modules
-import {fileStreamer} from "../file.streamer.js";
+import {FileStreamer} from "../file.streamer.js";
 
 (async() => {
 
@@ -16,7 +16,7 @@ import {fileStreamer} from "../file.streamer.js";
         // file
         [ file ] = process.argv.slice(2),
         // reader (4 bytes)
-        streamer = new fileStreamer({bufSize: 4, errorOnMissing: true, closeOnEOF: true});
+        streamer = new FileStreamer({bufSize: 4, errorOnMissing: true, closeOnEOF: true});
 
     // open
     await streamer.promise(`open`, file);

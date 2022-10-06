@@ -10,7 +10,7 @@ import process from "node:process";
 import console from "node:console";
 import {execFile} from "child_process";
 // import modules
-import {fileStreamer} from "../file.streamer.js";
+import {FileStreamer} from "../file.streamer.js";
 
 
 try {
@@ -22,7 +22,7 @@ try {
         // file
         [ file ] = process.argv.slice(2),
         // file streamer, continue reads on EOF
-        streamer = new fileStreamer({bufSize: 128, errorOnMissing: true, closeOnEOF: true});
+        streamer = new FileStreamer({bufSize: 128, errorOnMissing: true, closeOnEOF: true});
 
     streamer
         // attach file streamer error handler

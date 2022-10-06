@@ -14,7 +14,7 @@ const
     // close file
     ACTION_CLOSE_FILE = `close`;
 
-class fileStreamer extends EventEmitter {
+class FileStreamer extends EventEmitter {
 
     constructor({fileName = null, bufSize = MAX_STREAMABLE_BUFFER_SIZE, errorOnMissing = false, closeOnEOF = false} = {}) {
         // superclass constructor
@@ -302,4 +302,4 @@ class fileStreamer extends EventEmitter {
 }
 
 // never rename exports in modules
-export {fileStreamer};
+export {FileStreamer};
